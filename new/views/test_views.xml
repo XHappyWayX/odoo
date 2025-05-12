@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="test_model_action" model="ir.actions.act_window">
+        <field name="name">список форм</field>
+        <field name="res_model">test_model</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="store_list"/>
+    </record>
+    <record id="store_list" model="ir.ui.view">
+        <field name="name">test</field>
+        <field name="model">test_model</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Test">
+                <field name="name"/>
+                <field name="postcode"/>
+                <field name="bedrooms"/>
+                <field name="living_area"/>
+                <field name="expected_price"/>
+                <field name="selling_price"/>
+                <field name="date_availability"/>
+            </list>
+        </field>
+    </record>
+    <record id="test_model_view_form" model="ir.ui.view">
+        <field name="name">test_model_form</field>
+        <field name="model">test_model</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Test">
+                <header>
+                    <button name="action_sold" type="object" string="Sold"/>
+                    <button name="action_canceled" type="object" string="Cancel"/>
+                </header>
+                <sheet>
+                    <div>
+                        <group>
+                            <h1><field name="name"/></h1>
+                        </group>
+                    </div>
+                    <group>
+                        <group>
+                            <field class="oe-inline" name="tags_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="status"/>
+                        </group>
+                        <group>
+                            <field name="property_type_id"/>
+                        </group>
+                        <group>
+                            <field name="postcode"/>
+                        </group>
+                        <group>
+                            <field name="date_availability"/>
+                        </group>
+                        <group>
+                            <field name="expected_price"/>
+                        </group>
+                        <group>
+                            <field name="selling_price"/>
+                        </group>
+                        <group>
+                            <field string="Best Offer" name="best_price"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <group>
+                                <field name="description"/>
+                                <field name="bedrooms"/>
+                                <field name="living_area"/>
+                                <field name="facades"/>
+                                <field name="garage"/>
+                                <field name="garden"/>
+                                <field name="garden_area"/>
+                                <field name="garden_orientation"/>
+                                <field name="total_area"/>
+                            </group>
+                        </page>
+                        <page string="Other info">
+                            <group>
+                                <field name="sale_person_id"/>
+                                <field name="buyer_id"/>
+                            </group>
+                        </page>
+                        <page string="Offers">
+                            <field name="test_ids">
+                                <list>
+                                    <field name="price"/>
+                                    <field name="buyer_id"/>
+                                    <field name="validity"/>
+                                    <field name="date_deadline"/>
+                                    <button name="action_accept" type="object" string="✔️" description="Accept"/>
+                                    <button name="action_refuse" type="object" string="❌" description="Refuse"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="test_model_view_form_search" model="ir.ui.view">
+        <field name="name">test_model_form</field>
+        <field name="model">test_model</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="postcode"/>
+                <field name="bedrooms"/>
+                <field name="living_area"/>
+                <field name="expected_price"/>
+                <field name="selling_price"/>
+                <field name="date_availability"/>
+                <filter string="Group by" name="test_model_group" context="{'group_by':'postcode'}"/>
+                <filter string="status" name="status filtred" domain="['|', ('status', '=', 'new'), ('status', '=', 'offer_received')]"/>
+            </search>
+        </field>
+    </record>
+</odoo>

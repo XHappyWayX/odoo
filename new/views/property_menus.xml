@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<odoo>
+    <menuitem id="menu_property_root" name="Properties"/>
+
+    <menuitem id="menu_property_type"
+              name="Property Types"
+              parent="menu_property_root"
+              action="property_action"/>
+    <menuitem id="menu_property_tag"
+              name="Property Tags"
+              parent="menu_property_root"
+              action="property_tag_action"/>
+</odoo>

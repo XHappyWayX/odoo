@@ -1,0 +1,18 @@
+{
+    'name': "New",
+    'version': '1.0',
+    'author': " Nikita",
+    'depends': ['base'],
+    'category': 'Category',
+    'license': 'LGPL-3',
+    'installable': True,
+    'auto_install': False,
+    'application': False,
+    'data': [
+        'security/ir.model.access.csv',
+        'views/test_views.xml',
+        'views/test_menus.xml',
+        'views/property_views.xml',
+        'views/property_menus.xml',
+    ],
+}
