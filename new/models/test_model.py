@@ -2,10 +2,10 @@ from odoo import fields, models, api
 from datetime import timedelta
 from odoo.exceptions import UserError
 
-
 class TestModel(models.Model):
     _name = "test_model"
     _description = "Test Model"
+    _order = "id desc"
 
     name = fields.Char(required=True, default="Unknown")
     description = fields.Text()
@@ -21,7 +21,7 @@ class TestModel(models.Model):
     garden_area = fields.Integer()
     garden_orientation = fields.Selection(selection=[('north', 'North'), ('south', 'South'), ('east', 'East'), ('west', 'West')],)
     active = fields.Boolean(default=True)
-    status = fields.Selection(selection=[('new', 'New'), ('offer_received', 'Offer Received'), ('offer_accepted', 'Offer Accepted'), ('sold', 'Sold'), ('cancelled', 'Cancelled')], readonly=True)
+    status = fields.Selection(selection=[('new', 'New'), ('offer_received', 'Offer Received'), ('offer_accepted', 'Offer Accepted'), ('sold', 'Sold'), ('canceled', 'Canceled')], readonly=True, default='new')
     property_type_id = fields.Many2one(comodel_name="property.type", string="Property Type")
     sale_person_id = fields.Many2one(comodel_name="res.users", string="Sales Person", default=lambda self: self.env.user)
     buyer_id = fields.Many2one(comodel_name="res.partner", string="Buyer", copy=False)
@@ -54,24 +54,38 @@ class TestModel(models.Model):
 
     def action_sold(self):
         for record in self:
-            if record.status == "cancelled":
-                raise UserError("Cancelled properties cannot be sold.")
+            if record.status == "canceled":
+                raise UserError("Canceled properties cannot be sold.")
             elif record.status == "sold":
                 raise UserError("Properties already sold.")
+            elif record.buyer_id == False:
+                raise UserError("No buyer selected.")
             else:
                 record.status = "sold"
 
     def action_canceled(self):
         for record in self:
-            if record.status == "cancelled":
-                raise UserError("Properties already cancelled.")
+            if record.status == "canceled":
+                raise UserError("Properties already canceled.")
             elif record.status == "sold":
-                raise UserError("Sold properties cannot be cancelled.")
+                raise UserError("Sold properties cannot be canceled.")
             else:
-                record.status = "cancelled"
+                record.status = "canceled"
+
+    @api.ondelete(at_uninstall=False)
+    def _check_status_before_delete(self):
+        for record in self:
+            if record.status not in ["new", "canceled"]:
+                raise UserError("Only canceled or new properties can be deleted.")
 
     _sql_constraints = [
         ("check_expected_price", "CHECK(expected_price > 0)", "The expected price must be strictly positive."),
         ("check_selling_price", "CHECK(selling_price >= 0)", "The selling price must be positive or zero."),
 
     ]
+
+class UserExtension(models.Model):
+    _inherit = "res.users"
+    _description = "User Extension"
+
+    property_ids = fields.One2many("test_model", "buyer_id", string="Sailing Properties", domain="[('status', '!=', 'sold'), ('status', '!=', 'canceled')]")

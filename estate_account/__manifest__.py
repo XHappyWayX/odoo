@@ -1,8 +1,8 @@
 {
-    'name': "New",
+    'name': "Estate Account",
     'version': '1.0',
     'author': " Nikita",
-    'depends': ['base'],
+    'depends': ['new', 'account'],
     'category': 'Real Estate',
     'license': 'LGPL-3',
     'installable': True,
@@ -10,10 +10,6 @@
     'application': False,
     'data': [
         'security/ir.model.access.csv',
-        'views/test_views.xml',
-        'views/test_menus.xml',
-        'views/property_views.xml',
-        'views/property_menus.xml',
-        'views/Kanban_view.xml',
+
     ],
 }
